@@ -12,7 +12,7 @@ import numpy as np
 
 class basic_heatmap():
     def __init__(self, X, row_labels=None, column_labels=None, figsize=(10,7),
-                vmin=0, vmax=1, cmap=cm.seismic):
+                vmin=None, vmax=None, cmap=cm.seismic):
         """
         stores all the initial values in the class and then calls the basic graph.
         """
@@ -32,7 +32,7 @@ class basic_heatmap():
         # setup first axis. NB the colspan and rowspan will need to be adjusted in 
         # any class extending this graph.
         self.ax = plt.subplot2grid(self.figsize,(0,0),rowspan=10, colspan=7)
-        plt.pcolor(self.X, cmap=self.cmap)
+        plt.pcolor(self.X, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
     
     def label_axes(self):
         # put the major ticks at the middle of each cell
@@ -75,10 +75,13 @@ class hm_scalebar(basic_heatmap):
         self.fig = plt.figure(figsize=self.figsize)
         self.ax = plt.subplot2grid(self.figsize,(0,0), rowspan=self.figsize[0], 
                                     colspan=self.figsize[1] - 1)
-        plt.pcolor(self.X, cmap=self.cmap)
+        plt.pcolor(self.X, cmap=self.cmap, vmin=self.vmin, vmax=self.vmax)
         self.scalebar()
         
     def scalebar(self):    
+        if not self.vmax or not self.vmin:
+            self.vmax = 1
+            self.vmin = 0
         nrml = mpl.colors.Normalize(vmin=self.vmin, vmax=self.vmax)
         self.ax2 = plt.subplot2grid(self.figsize,(0,self.figsize[1] - 1), 
                                     rowspan=5, colspan=1)
